@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 ECharts 文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+    <title>Document</title>
+
+</head>
+
+<body>
+    <button type="button" onclick="myFunction()">发送请求</button>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script>
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data: ["city"]
+            },
+            xAxis: {
+                data: ["衬衣", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        function myFunction() {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                // 输出接收到的文字数据
+                // alert(xhr.responseText)
+                var obj = JSON.parse(xhr.responseText)
+                // 更新值
+                myChart.setOption({
+                    xAxis: {
+                        data: [obj.data.name, "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+                    },
+                    series: [{
+                        data: [Math.ceil(Math.random() * 100), 20, 36, 10, 10, 20]
+                    }]
+                });
+
+            }
+            xhr.onerror = function () {
+                alert("请求出错");
+            }
+            // 发送异步 GET 请求
+            xhr.open("GET", "https://www.qweather.com/v2/current/condition/s/shanghai-101020100.html?lang=&_=1624502100", true);
+            xhr.send();
+        }
+
+    </script>
+</body>
+
+</html>
